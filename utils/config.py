@@ -6,6 +6,7 @@ import pathlib
 from typing import Tuple, Any
 
 import googleapiclient.discovery
+import streamlit as st
 import yaml
 import keyring
 import streamlit as st
@@ -88,7 +89,12 @@ try:
     google_api_key = keyring.get_password('local_user', 'google_api_key_youtubecomments')
 # ideally this is not just hanging in config as a  string...
 except NoKeyringError:
-    google_api_key = data['GOOGLE_API_KEY']
+    try:
+        google_api_key = data['GOOGLE_API_KEY']
+    except KeyError:
+        # allow user to just throw it in via app
+        google_api_key = st.text_input('Please Paste Google API Key:')
+
 
 youtube_client = googleapiclient.discovery.build(
     serviceName="youtube",

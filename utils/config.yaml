@@ -1,0 +1,2 @@
+SENTIMENT_MODEL = r'./models/cardiffnlp/twitter-roberta-base-sentiment-latest'
+NAMECALLLING_MODEL = r'./models/civility-lab/roberta-base-namecalling'

@@ -91,7 +91,7 @@ try:
 except NoKeyringError:
     try:
         google_api_key = data['GOOGLE_API_KEY']
-    except KeyError:
+    except TypeError:
         # allow user to just throw it in via app
         google_api_key = st.text_input('Please Paste Google API Key:')
 

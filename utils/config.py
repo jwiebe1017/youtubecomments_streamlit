@@ -9,6 +9,7 @@ import googleapiclient.discovery
 import yaml
 import keyring
 import streamlit as st
+from keyring.errors import NoKeyringError
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification, \
     TextClassificationPipeline
 
@@ -83,9 +84,10 @@ with open('./utils/config.yaml') as cfg:
     data = yaml.safe_load(cfg)
 
 # local runs have the key in keyring
-google_api_key = keyring.get_password('local_user', 'google_api_key_youtubecomments')
+try:
+    google_api_key = keyring.get_password('local_user', 'google_api_key_youtubecomments')
 # ideally this is not just hanging in config as a  string...
-if not google_api_key:
+except NoKeyringError:
     google_api_key = data['KEY']
 
 youtube_client = googleapiclient.discovery.build(

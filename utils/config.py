@@ -92,8 +92,8 @@ except NoKeyringError:
     try:
         google_api_key = data['GOOGLE_API_KEY']
     except TypeError:
-        # allow user to just throw it in via app
-        google_api_key = st.text_input('Please Paste Google API Key:')
+        # utilize streamlit secrets
+        google_api_key = st.secrets['GOOGLE_API_KEY']
 
 
 youtube_client = googleapiclient.discovery.build(

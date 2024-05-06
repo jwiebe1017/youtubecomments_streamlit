@@ -3,6 +3,7 @@ project configs + inits for injection
 
 """
 import pathlib
+from typing import Tuple, Any
 
 import googleapiclient.discovery
 import yaml
@@ -17,16 +18,21 @@ __author__ = 'jwiebe1017'
 __version__ = '1.0.0'
 __credits__ = ['stackoverflow', 'me, myself, and I', 'you I guess?']
 
-
 log = logging_setup(__name__, False)
 
 
 @st.cache_resource
-def init_sent_model(model_name):
+def init_sent_model(model_name: str) -> Tuple[Any, Any, Any]:
+    """
+    cache model if available. If not, download model and save locally -> re-init from local
+
+    :param str model_name: huggingface model name, e.g. 'user/model_name'
+    :return tuple: (tokenizer, config, model) from autoloaders
+    """
     try:
         return AutoTokenizer.from_pretrained(model_name), \
-           AutoConfig.from_pretrained(model_name), \
-           AutoModelForSequenceClassification.from_pretrained(model_name)
+               AutoConfig.from_pretrained(model_name), \
+               AutoModelForSequenceClassification.from_pretrained(model_name)
     except Exception as e:
         log.warning(e)
         p = pathlib.Path(model_name)
@@ -43,12 +49,20 @@ def init_sent_model(model_name):
         return AutoTokenizer.from_pretrained(model_name), \
                AutoConfig.from_pretrained(model_name), \
                AutoModelForSequenceClassification.from_pretrained(model_name)
+
+
 @st.cache_resource
-def init_nc_model(model_name):
+def init_nc_model(model_name: str) -> TextClassificationPipeline:
+    """
+    cache model if available. If not, download model and save locally -> re-init from local
+
+    :param str model_name: huggingface model name, e.g. 'user/model_name'
+    :return TextClassificationPipeline: pipeline of loaded tokenizer and model
+    """
     try:
         return TextClassificationPipeline(
-        tokenizer=AutoTokenizer.from_pretrained(model_name),
-        model=AutoModelForSequenceClassification.from_pretrained(model_name))
+            tokenizer=AutoTokenizer.from_pretrained(model_name),
+            model=AutoModelForSequenceClassification.from_pretrained(model_name))
     except Exception as e:
         log.warning(e)
         p = pathlib.Path(model_name)
@@ -61,16 +75,17 @@ def init_nc_model(model_name):
 
         # re-init from local
         return TextClassificationPipeline(
-        tokenizer=AutoTokenizer.from_pretrained(model_name),
-        model=AutoModelForSequenceClassification.from_pretrained(model_name))
+            tokenizer=AutoTokenizer.from_pretrained(model_name),
+            model=AutoModelForSequenceClassification.from_pretrained(model_name))
+
 
 with open('./utils/config.yaml') as cfg:
     data = yaml.safe_load(cfg)
 
-google_api_key = ''
-try:
-    google_api_key = keyring.get_password('local_user', 'google_api_key_youtubecomments')
-except Exception:
+# local runs have the key in keyring
+google_api_key = keyring.get_password('local_user', 'google_api_key_youtubecomments')
+# ideally this is not just hanging in config as a  string...
+if not google_api_key:
     google_api_key = data['KEY']
 
 youtube_client = googleapiclient.discovery.build(

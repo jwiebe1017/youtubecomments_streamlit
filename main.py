@@ -14,7 +14,6 @@ __author__ = 'jwiebe1017'
 __version__ = '1.0.0'
 __credits__ = ['stackoverflow', 'me, myself, and I', 'you I guess?']
 
-
 if __name__ == '__main__':
     log = logging_setup(__name__, False)
 
@@ -33,7 +32,6 @@ if __name__ == '__main__':
 
         if not sent_comments_df.equals(comments_df):
             comments_df = sent_comments_df.copy()
-
 
         filt_cols = st.sidebar.multiselect('Filter to Columns:', comments_df.columns.values)
         filt_posnegneut = st.sidebar.multiselect(

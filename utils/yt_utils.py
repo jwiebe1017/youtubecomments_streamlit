@@ -138,7 +138,7 @@ def getcomments(video_id: str) -> pd.DataFrame:
         columns=['author', 'updated_at', 'like_count', 'text', 'video_id', 'public']
     )
 
-    # reorder the cols for clarity
+    # reorder the cols per my preferences
     return df2[[
         'public',
         'author',

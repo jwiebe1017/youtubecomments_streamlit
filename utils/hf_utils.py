@@ -12,8 +12,8 @@ __author__ = 'jwiebe1017'
 __version__ = '1.0.0'
 __credits__ = ['stackoverflow', 'me, myself, and I', 'you I guess?']
 
-
 log = logging_setup(__name__, False)
+
 
 def preprocess(text):
     """
@@ -38,11 +38,11 @@ def sentiment_analysis(text: str) -> str:
     text = preprocess(text)
     try:
         encoded_input = sentiment_tokenizer(
-        text,
-        return_tensors='pt',
-        truncation=True,
-        max_length=512,
-    )
+            text,
+            return_tensors='pt',
+            truncation=True,
+            max_length=512,
+        )
         output = sentiment_model(**encoded_input)
         scores = output[0][0].detach().numpy()
         scores = softmax(scores)

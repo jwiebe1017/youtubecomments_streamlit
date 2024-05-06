@@ -88,7 +88,7 @@ try:
     google_api_key = keyring.get_password('local_user', 'google_api_key_youtubecomments')
 # ideally this is not just hanging in config as a  string...
 except NoKeyringError:
-    google_api_key = data['KEY']
+    google_api_key = data['GOOGLE_API_KEY']
 
 youtube_client = googleapiclient.discovery.build(
     serviceName="youtube",
